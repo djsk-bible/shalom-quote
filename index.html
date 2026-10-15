@@ -347,7 +347,7 @@ table.pt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px;b
       <div class="s-title">견 적 서</div>
       <div class="info">
         <label class="line"><span class="lab">발행날짜</span><input type="date" id="fDate"></label>
-        <label class="line"><span class="lab">거래처명</span><input type="text" id="fClient" placeholder="거래처명 입력" list="clientList" autocomplete="off"></label>
+        <label class="line"><span class="lab">거래처명</span><input type="text" id="fClient" enterkeyhint="next" placeholder="거래처명 입력" list="clientList" autocomplete="off"></label>
         <div class="line"><span class="lab">견적번호</span><span class="qno" id="fNo">-</span></div>
         <datalist id="clientList"></datalist>
       </div>
@@ -884,7 +884,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
 <script>
 'use strict';
-const APP_V = '5.3';
+const APP_V = '5.5';
 const KEY = 'shalom-quote-v5';
 const UI_KEY = 'shalom-quote-v5-ui';
 let UI = {}; try { UI = JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; } catch (e) { UI = {}; }
@@ -1296,10 +1296,10 @@ function renderItems() {
   h += '<thead><tr>' + heads.map((x) => `<th>${x}</th>`).join('') + '</tr></thead><tbody>';
   cur.items.forEach((it, i) => {
     h += `<tr data-i="${i}">
-      <td><input class="c" data-f="spec" value="${esc(it.spec)}" autocomplete="off"></td>
-      <td class="nm"><textarea rows="1" data-f="name">${esc(it.name)}</textarea><button class="rowdel" aria-label="이 줄 삭제"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></td>
-      <td><input class="r" data-f="qty" inputmode="decimal" value="${esc(fmtInput(it.qty))}" autocomplete="off"></td>
-      <td><input class="r" data-f="unitPrice" inputmode="numeric" value="${esc(fmtInput(it.unitPrice))}" autocomplete="off"></td>
+      <td><input class="c" data-f="spec" enterkeyhint="next" value="${esc(it.spec)}" autocomplete="off"></td>
+      <td class="nm"><textarea rows="1" data-f="name" enterkeyhint="next">${esc(it.name)}</textarea><button class="rowdel" aria-label="이 줄 삭제"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></td>
+      <td><input class="r" data-f="qty" inputmode="decimal" enterkeyhint="next" value="${esc(fmtInput(it.qty))}" autocomplete="off"></td>
+      <td><input class="r" data-f="unitPrice" inputmode="numeric" enterkeyhint="next" value="${esc(fmtInput(it.unitPrice))}" autocomplete="off"></td>
       <td class="calc" data-c="supply"></td>${inc ? '<td class="calc" data-c="tax"></td>' : ''}
     </tr>`;
   });
@@ -1344,10 +1344,26 @@ tbl.addEventListener('input', (e) => {
     if (v !== el.value) el.value = v;
     it[f] = v === '' || v === '-' || v === '.' ? '' : Number(v);
   } else {
+    if (el.tagName === 'TEXTAREA' && /[\r\n]/.test(el.value)) {
+      // 키보드 [다음]/엔터가 줄바꿈으로 들어온 경우 → 지우고 수량 칸으로 이동
+      el.value = el.value.replace(/[\r\n]+/g, '');
+      it[f] = el.value; autoGrow(el); updateCalcCells(); renderTotals(); touch();
+      focusNextFrom(el); return;
+    }
     it[f] = el.value;
     if (el.tagName === 'TEXTAREA') autoGrow(el);
   }
   updateCalcCells(); renderTotals(); touch();
+});
+function focusNextFrom(el) {
+  const tr = el.closest('tr'); const q = tr && tr.querySelector('[data-f=qty]');
+  if (q) setTimeout(() => q.focus(), 0);
+}
+tbl.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'TEXTAREA' && e.key === 'Enter' && !e.isComposing) { e.preventDefault(); focusNextFrom(e.target); }
+});
+tbl.addEventListener('beforeinput', (e) => {
+  if (e.target.tagName === 'TEXTAREA' && (e.inputType === 'insertLineBreak' || e.inputType === 'insertParagraph')) { e.preventDefault(); focusNextFrom(e.target); }
 });
 tbl.addEventListener('focusin', (e) => {
   const tr = e.target.closest('tr'); if (!tr) return;
