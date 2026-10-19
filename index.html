@@ -474,7 +474,8 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
       <div class="g2"><div><label class="k" for="sBizNo">사업자등록번호</label><input id="sBizNo" placeholder="000-00-00000"></div><div><label class="k" for="sPhone">전화번호</label><input id="sPhone"></div></div>
       <div class="f"><label class="k" for="sAddr">사업장 주소</label><input id="sAddr"></div>
       <div class="g2"><div><label class="k" for="sType">업태</label><input id="sType"></div><div><label class="k" for="sItem">종목</label><input id="sItem"></div></div>
-      <div class="f"><label class="k" for="sNote">기본 비고</label><textarea id="sNote" rows="2"></textarea></div>
+      <div class="f"><label class="k" for="sNote">견적서 기본 비고</label><textarea id="sNote" rows="2"></textarea></div>
+      <div class="f"><label class="k" for="sNoteSt">거래명세서 기본 비고</label><textarea id="sNoteSt" rows="2" placeholder="비워 두면 비고 없이 시작해요"></textarea></div>
       <label class="chk"><input type="checkbox" id="sVat"> 새 견적서를 "부가세 포함"으로 시작</label>
     </div>
   </div>
@@ -942,7 +943,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
 <script>
 'use strict';
-const APP_V = '6.0';
+const APP_V = '6.1';
 const KEY = 'shalom-quote-v5';
 const UI_KEY = 'shalom-quote-v5-ui';
 let UI = {}; try { UI = JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; } catch (e) { UI = {}; }
@@ -964,6 +965,7 @@ const defaultSettings = {
   bizNo: '637-23-00500', bizName: '샬롬광고기획', ceoName: '정선경',
   address: '대전광역시 유성구 유성대로20 2층', bizType: '서비스업 외',
   bizItem: '옥외 및 전시 광고업', phone: '042)543-1238',
+  defaultNoteSt: '',
   defaultNote: '견적 결정 후 계약금 10%, 중도금 40%, 시공 당일 50% 결제. | A/S는 시공일로부터 1년.',
   vatDefault: false,
   stamp: '', stampSrc: '', stampColor: 'red', stampSize: 100, stampOn: true
@@ -1115,6 +1117,8 @@ function calcTotals(q) {
 // 견적서: 202610-0001 · 거래명세서: M202610-0001 (번호를 따로 씀)
 const isSt = (q) => !!q && q.docType === 'statement';
 const docName = (q) => (isSt(q) ? '거래명세서' : '견적서');
+// 문서 종류별 기본 비고 (설정에서 바꿈)
+const defNote = (t) => String((t === 'statement' ? app.settings.defaultNoteSt : app.settings.defaultNote) || '');
 function ctrOf(t) { if (t === 'statement') { if (!app.counterSt) app.counterSt = {}; return app.counterSt; } return app.counterByYear; }
 const noPre = (t) => (t === 'statement' ? 'M' : '');
 function peekNo(dateStr, t) {
@@ -1340,7 +1344,7 @@ function padRows(q) {
 }
 function newQuote(t) {
   const s = app.settings;
-  openEditor({ docType: t === 'statement' ? 'statement' : 'quote', issueDate: todayLocal(), clientName: '', vatMode: s.vatDefault ? 'included' : 'separate', note: s.defaultNote || '', items: [] }, null, false);
+  openEditor({ docType: t === 'statement' ? 'statement' : 'quote', issueDate: todayLocal(), clientName: '', vatMode: s.vatDefault ? 'included' : 'separate', note: defNote(t), items: [] }, null, false);
 }
 function openEditor(q, no, fromDraft) {
   cur = normalize(q); curNo = no || null;
@@ -1356,7 +1360,7 @@ function normalizeForCompare(q) { const c = normalize(q); padRows(c); return c; 
 function isDirty() { return JSON.stringify(cur) !== savedSnap; }
 function isBlankQuote(q, no) {
   return !no && !String(q.clientName || '').trim() && !(q.items || []).some(itemHasData) &&
-    (String(q.note || '') === String(app.settings.defaultNote || '') || !String(q.note || '').trim());
+    (String(q.note || '') === defNote(q.docType) || !String(q.note || '').trim());
 }
 function isBlankNew() { return isBlankQuote(cur, curNo); }
 function isBlankDraft(d) { return !d || !d.cur || isBlankQuote(d.cur, d.curNo); }
@@ -1555,8 +1559,11 @@ $('tSaveAs').onclick = () => {
 };
 function saveAsType(t) {
   $('mSaveAs').classList.remove('show');
-  const prev = cur.docType; cur.docType = t;
-  if (!doSave(true)) { cur.docType = prev; return; }
+  const prev = cur.docType, prevNote = cur.note;
+  // 비고를 손대지 않았으면 바꾸는 문서의 기본 비고로 교체
+  if (t !== prev && String(cur.note || '') === defNote(prev)) cur.note = defNote(t);
+  cur.docType = t;
+  if (!doSave(true)) { cur.docType = prev; cur.note = prevNote; return; }
   renderEditor();
   toast(docName(cur) + ' ' + curNo + '로 저장했어요');
 }
@@ -1848,7 +1855,7 @@ function openSettings() {
   document.querySelectorAll('#settings .lnk').forEach((l) => { l.textContent = l.dataset.tg === 'pStamp' ? '바꾸기' : '수정'; });
   $('sBizNo').value = s.bizNo; $('sBizName').value = s.bizName; $('sCeo').value = s.ceoName;
   $('sAddr').value = s.address; $('sType').value = s.bizType; $('sItem').value = s.bizItem;
-  $('sPhone').value = s.phone; $('sNote').value = s.defaultNote; $('sVat').checked = !!s.vatDefault;
+  $('sPhone').value = s.phone; $('sNote').value = s.defaultNote; $('sNoteSt').value = s.defaultNoteSt || ''; $('sVat').checked = !!s.vatDefault;
   stampTmp = { stamp: s.stamp, stampSrc: s.stampSrc, stampColor: s.stampColor || 'red', stampSize: s.stampSize || 100, stampOn: s.stampOn !== false };
   renderStampUI();
   show('settings', true);
@@ -1872,7 +1879,7 @@ $('sBackup').onclick = () => { exportBackup(); openSettingsBackupTxt(); };
 $('sCancel').onclick = () => goBack();
 $('sSave').onclick = () => {
   const v = (id) => $(id).value.trim();
-  app.settings = { ...app.settings, bizNo: v('sBizNo'), bizName: v('sBizName'), ceoName: v('sCeo'), address: v('sAddr'), bizType: v('sType'), bizItem: v('sItem'), phone: v('sPhone'), defaultNote: $('sNote').value, vatDefault: $('sVat').checked, ...stampTmp };
+  app.settings = { ...app.settings, bizNo: v('sBizNo'), bizName: v('sBizName'), ceoName: v('sCeo'), address: v('sAddr'), bizType: v('sType'), bizItem: v('sItem'), phone: v('sPhone'), defaultNote: $('sNote').value, defaultNoteSt: $('sNoteSt').value, vatDefault: $('sVat').checked, ...stampTmp };
   if (persist()) { toast('설정을 저장했어요'); goBack(); }
 };
 $('btnStampCam').onclick = () => $('fileStampCam').click();
