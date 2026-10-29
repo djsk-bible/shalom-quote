@@ -1,5 +1,5 @@
 // 샬롬견적서 오프라인 캐시 (새 버전은 앱의 [바꾸기] 버튼이 캐시를 비우고 다시 받음)
-const CACHE = 'shalom-quote-6.1';
+const CACHE = 'shalom-quote-6.4';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));

@@ -16,6 +16,7 @@ html,body{margin:0;background:var(--bg);color:#222;font-family:'Pretendard','Not
 button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 input,textarea{font-family:inherit}
 svg{flex-shrink:0}
+[hidden]{display:none!important}
 .screen{display:none}
 .screen.on{display:block}
 .wrap{max-width:560px;margin:0 auto}
@@ -129,8 +130,8 @@ table.sum{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
 .note span{font-size:12px;font-weight:700;color:#333}
 .note textarea{width:100%;min-height:44px;padding:4px 6px;border:1px solid #ccc;border-radius:0;font-size:12.5px;line-height:1.4;color:#222;resize:vertical;outline:none}
 .fmsg{text-align:center;display:flex;flex-direction:column;padding-top:1px;color:var(--blue)}
-.fmsg b:first-child{font-size:11px}
-.fmsg b:last-child{font-size:14px}
+.fmsg #fmMsg{font-size:11px}
+.fmsg #fmName{font-size:14px}
 
 /* ---------- 미리보기 ---------- */
 #preview{min-height:100vh;background:#e9ecf1}
@@ -183,8 +184,8 @@ table.pt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px;b
 .pg-note div{padding:10px 12px;min-height:64px;line-height:1.6;white-space:pre-wrap;word-break:break-all;flex:1}
 .pg-grow{flex:1;min-height:20px}
 .pg-foot{text-align:center;display:flex;flex-direction:column;gap:4px;color:var(--blue)}
-.pg-foot b:first-child{font-size:15px}
-.pg-foot b:last-child{font-size:22px}
+.pg-foot .fm{font-size:15px}
+.pg-foot .fn{font-size:22px}
 .pg.multi{height:1123px;overflow:hidden}
 .pg-cont{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #222;padding-bottom:6px;margin-bottom:14px;font-size:15px;color:#333}
 .pg-cont b{font-size:20px;letter-spacing:4px;color:#222}
@@ -350,6 +351,44 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
 .nlbtn{position:absolute;left:2px;top:100%;margin-top:3px;z-index:6;height:26px;padding:0 10px;border:none;border-radius:13px;background:#1d2433;color:#fff;font-size:12px;font-weight:700;display:none;align-items:center;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 .it td.nm:focus-within .nlbtn{display:flex}
 
+/* 설정 (묶음형) */
+#settings,#setCompany,#setDoc,#setStamp{min-height:100vh;background:#f3f5f9}
+.sw-wrap{max-width:560px;margin:0 auto;padding:calc(6px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.sw-head{display:flex;align-items:center;gap:2px;margin-left:-12px;height:56px}
+.sw-head h3{margin:0;font-size:20px;font-weight:700}
+.sw-wrap .gl{font-size:12.5px;font-weight:600;color:#7a8394;padding:16px 6px 7px}
+.sw-wrap .grp{background:#fff;border-radius:14px;overflow:hidden}
+.sw-wrap .sr{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:9px 14px;border:none;border-bottom:1px solid #f0f2f5;background:#fff;text-align:left;color:var(--ink);font:inherit}
+.sw-wrap .sr:last-child{border-bottom:none}
+.sw-wrap .sr:active{background:#f6f8fb}
+.sw-wrap .sr.pl0{padding:0;min-height:0;border:none;width:auto;flex:1;min-width:0}
+.sw-wrap .sr>svg{color:#a3aab6}
+.sw-wrap .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sw-wrap .ic.b{background:#e8eef8;color:#2b5fa8}.sw-wrap .ic.r{background:#f8eced;color:#a33a45}.sw-wrap .ic.g{background:#e6f2ea;color:#1e7a3c}.sw-wrap .ic.n{background:#eef0f3;color:#4a5160}
+.sw-wrap .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.sw-wrap .tx b{font-size:15px;font-weight:600}
+.sw-wrap .tx small{font-size:12.5px;color:#7a8394;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-wrap .warn{color:#b3261e;font-weight:600}
+.swc{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:14px;background:#d5dbe5;position:relative;flex-shrink:0;margin:0;cursor:pointer;transition:background .15s}
+.swc::after{content:'';position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:11px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}
+.swc:checked{background:#2b5fa8}.swc:checked::after{left:21px}
+.swc:focus-visible{outline:2px solid #2b5fa8;outline-offset:2px}
+.sw-wrap .ver{text-align:center;font-size:12px;color:#9aa1ad;padding:20px 0 4px}
+.sw-wrap .hint{font-size:12.5px;color:#7a8394;padding:4px 6px 10px;line-height:1.5}
+.sw-wrap .grp+.hint{padding-top:8px}
+.sw-wrap .fm{display:flex;flex-direction:column}
+.sw-wrap .fm .f{display:flex;flex-direction:column;gap:4px;padding:10px 14px;border-bottom:1px solid #f0f2f5}
+.sw-wrap .fm>.f:last-child,.sw-wrap .fm>.g2:last-child .f{border-bottom:none}
+.sw-wrap .fm .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.sw-wrap .fm .g2 .f:first-child{border-right:1px solid #f0f2f5}
+.sw-wrap .fm label{font-size:12.5px;font-weight:600;color:#7a8394}
+.sw-wrap .fm input:not(.swc),.sw-wrap .fm textarea{width:100%;border:none;outline:none;padding:2px 0;font:inherit;font-size:15.5px;color:var(--ink);background:transparent}
+.sw-wrap .fm textarea{min-height:46px;line-height:1.45;resize:vertical}
+.sw-wrap .fm input::placeholder,.sw-wrap .fm textarea::placeholder{color:#b4bac5}
+.sw-wrap .fm .f:focus-within label{color:#2b5fa8}
+#setStamp .fm{padding:14px;gap:12px}
+.sw-wrap .sv{position:sticky;bottom:calc(14px + env(safe-area-inset-bottom));margin-top:18px;width:100%;box-shadow:0 4px 12px rgba(43,95,168,.25)}
+
 @media print{
   @page{size:A4;margin:0}
   html,body{background:#fff!important}
@@ -392,7 +431,7 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
       <button class="tile pri" id="tSave"><i data-ic="save"></i><span>저장</span></button>
     </div>
 
-    <div class="sheet">
+    <form class="sheet" id="fEdit" novalidate autocomplete="off" onsubmit="return false">
       <div class="s-title" id="sTitle">견 적 서</div>
       <div class="info">
         <label class="line"><span class="lab">발행날짜</span><input type="date" id="fDate"></label>
@@ -407,11 +446,11 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
       </div>
       <div class="total"><span class="tl">합계금액</span><span class="tv"><b id="totK">일금 영원정</b><span>( ₩ <span id="totN">0</span> / <span id="totV">VAT별도</span> )</span></span></div>
       <table class="it" id="itTable"></table>
-      <button class="addrow" id="btnAddRow"><i data-ic="plus" data-s="14" data-w="2.6"></i>품목 추가</button>
+      <button class="addrow" id="btnAddRow" type="button"><i data-ic="plus" data-s="14" data-w="2.6"></i>품목 추가</button>
       <table class="sum" id="sumTable"></table>
       <label class="note"><span>비고</span><textarea id="fNote" placeholder="기록사항을 입력하세요"></textarea></label>
-      <div class="fmsg"><b>올바른 선택이 가치를 더합니다. 최고의 결과로 완성하겠습니다.</b><b>샬롬광고기획</b></div>
-    </div>
+      <div class="fmsg"><b id="fmMsg"></b><b id="fmName"></b></div>
+    </form>
   </div>
 </section>
 
@@ -458,43 +497,72 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
 </div></div>
 
 <!-- 설정 -->
-<section id="settings" class="screen"><div class="set-wrap set">
-  <div class="set-head"><button class="icon-btn" id="sClose" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>설정</h3></div>
-
-  <div class="sec two">
-    <button class="dcard" id="sOpenFile"><i data-ic="folderOpen" data-s="19"></i><b>파일로 열기(.json)</b></button>
-    <button class="dcard" id="sBackup"><i data-ic="backup" data-s="19"></i><b>전체 백업</b><small id="sBackupTxt" hidden></small></button>
+<section id="settings" class="screen"><div class="sw-wrap">
+  <div class="sw-head"><button class="icon-btn" id="sClose" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>설정</h3></div>
+  <div class="gl">기본 정보</div>
+  <div class="grp">
+    <button class="sr" id="goCompany"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span><span class="tx"><b>회사 정보</b><small id="sumCompany"></small></span><i data-ic="chev" data-s="16"></i></button>
+    <button class="sr" id="goDoc"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span><span class="tx"><b>문서 기본값</b><small id="sumDoc"></small></span><i data-ic="chev" data-s="16"></i></button>
+    <button class="sr" id="goStamp"><span class="ic r"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 12h6"/></svg></span><span class="tx"><b>도장</b><small id="sumStamp"></small></span><i data-ic="chev" data-s="16"></i></button>
   </div>
-
-  <div class="sec">
-    <div class="sec-t"><b>회사 정보</b><button class="lnk" data-tg="pCompany">수정</button></div>
-    <div class="sum" id="sumCompany"></div>
-    <div class="panel" id="pCompany" hidden>
-      <div class="g2"><div><label class="k" for="sBizName">상호</label><input id="sBizName"></div><div><label class="k" for="sCeo">대표자명</label><input id="sCeo"></div></div>
-      <div class="g2"><div><label class="k" for="sBizNo">사업자등록번호</label><input id="sBizNo" placeholder="000-00-00000"></div><div><label class="k" for="sPhone">전화번호</label><input id="sPhone"></div></div>
-      <div class="f"><label class="k" for="sAddr">사업장 주소</label><input id="sAddr"></div>
-      <div class="g2"><div><label class="k" for="sType">업태</label><input id="sType"></div><div><label class="k" for="sItem">종목</label><input id="sItem"></div></div>
-      <div class="f"><label class="k" for="sNote">견적서 기본 비고</label><textarea id="sNote" rows="2"></textarea></div>
-      <div class="f"><label class="k" for="sNoteSt">거래명세서 기본 비고</label><textarea id="sNoteSt" rows="2" placeholder="비워 두면 비고 없이 시작해요"></textarea></div>
-      <label class="chk"><input type="checkbox" id="sVat"> 새 견적서를 "부가세 포함"으로 시작</label>
-    </div>
+  <div class="gl">입력</div>
+  <div class="grp">
+    <label class="sr" id="secKb"><span class="ic n"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M8 14h8"/></svg></span><span class="tx"><b>숫자 칸에서도 일반 키보드</b><small>탭·노트북에서 켜 주세요</small></span><input type="checkbox" class="swc" id="sKbText"></label>
   </div>
-
-  <div class="sec">
-    <div class="sec-t"><b>도장</b><button class="lnk" data-tg="pStamp">바꾸기</button></div>
-    <div class="stamp-line"><div class="checker sm" id="stampPrev">없음</div><label class="chk" style="flex:1"><input type="checkbox" id="stampOn"> 견적서에 도장 넣기</label></div>
-    <div class="panel" id="pStamp" hidden>
-      <div class="g2"><button class="sbtn pri" id="btnStampCam">사진 찍기</button><button class="sbtn" id="btnStampPick">사진에서 고르기</button></div>
-      <div class="small">흰 종이에 진하게 찍어 그림자 없이 찍으면 흰 배경이 자동으로 지워져요.</div>
-      <div class="seg" id="stampColor"><button data-v="orig">사진 색 그대로</button><button data-v="red">선명한 빨간색</button></div>
-      <label class="range"><span style="width:88px">크기 <b id="stampSizeV">100%</b></span><input type="range" id="stampSize" min="60" max="140" step="5" value="100"></label>
-      <div class="small" style="margin-top:-6px">100% = 실제 도장 19mm</div>
-      <button class="sbtn" id="btnStampDel" style="color:#b3261e">도장 지우기</button>
-    </div>
+  <div class="gl">데이터</div>
+  <div class="grp">
+    <button class="sr" id="sBackup"><span class="ic g"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg></span><span class="tx"><b>전체 백업</b><small id="sBackupTxt"></small></span><i data-ic="chev" data-s="16"></i></button>
+    <button class="sr" id="sOpenFile"><span class="ic g"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="tx"><b>백업 파일 불러오기</b><small>회사 정보·도장도 함께 불러와요</small></span><i data-ic="chev" data-s="16"></i></button>
   </div>
+  <div class="gl" id="glApp" style="display:none">앱</div>
+  <div class="grp" id="grpApp" style="display:none">
+    <button class="sr" id="btnHowInstall"><span class="ic n"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></span><span class="tx"><b>홈 화면에 설치하는 방법</b></span><i data-ic="chev" data-s="16"></i></button>
+  </div>
+  <div class="ver" id="verTxt"></div>
+</div></section>
 
-  <button class="srow" id="btnHowInstall" style="display:none"><span class="tx"><b>홈 화면에 앱 설치하는 방법</b></span><i data-ic="chev" data-s="18"></i></button>
-  <div class="m-actions"><span class="ver" id="verTxt"></span><button class="no" id="sCancel">취소</button><button class="yes" id="sSave">저장</button></div>
+<section id="setCompany" class="screen"><div class="sw-wrap">
+  <div class="sw-head"><button class="icon-btn sBack" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>회사 정보</h3></div>
+  <div class="hint">견적서·거래명세서의 공급자 칸에 들어가요.</div>
+  <div class="grp fm">
+    <div class="g2"><div class="f"><label for="sBizName">상호</label><input id="sBizName" placeholder="상호 입력"></div><div class="f"><label for="sCeo">대표자</label><input id="sCeo" placeholder="대표자 입력"></div></div>
+    <div class="f"><label for="sBizNo">사업자등록번호</label><input id="sBizNo" placeholder="000-00-00000"></div>
+    <div class="f"><label for="sAddr">사업장 주소</label><input id="sAddr" placeholder="주소 입력"></div>
+    <div class="f"><label for="sPhone">전화번호</label><input id="sPhone" placeholder="000-0000-0000"></div>
+    <div class="g2"><div class="f"><label for="sType">업태</label><input id="sType" placeholder="업태"></div><div class="f"><label for="sItem">종목</label><input id="sItem" placeholder="종목"></div></div>
+  </div>
+  <button class="btn-pri sv" id="saveCompany">저장</button>
+</div></section>
+
+<section id="setDoc" class="screen"><div class="sw-wrap">
+  <div class="sw-head"><button class="icon-btn sBack" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>문서 기본값</h3></div>
+  <div class="gl">비고</div>
+  <div class="grp fm">
+    <div class="f"><label for="sNote">견적서 기본 비고</label><textarea id="sNote" rows="2" placeholder="새 견적서에 미리 들어갈 비고"></textarea></div>
+    <div class="f"><label for="sNoteSt">거래명세서 기본 비고</label><textarea id="sNoteSt" rows="2" placeholder="새 거래명세서에 미리 들어갈 비고"></textarea></div>
+  </div>
+  <div class="gl">견적서 아래 문구</div>
+  <div class="grp fm">
+    <div class="f"><label for="sFoot">문구</label><textarea id="sFoot" rows="2" placeholder="예: 올바른 선택이 가치를 더합니다."></textarea></div>
+  </div>
+  <div class="hint">문구 아래 줄에는 회사 정보의 상호가 들어가요.</div>
+  <div class="gl">부가세</div>
+  <div class="grp"><label class="sr"><span class="tx"><b>새 문서를 부가세 포함으로 시작</b></span><input type="checkbox" class="swc" id="sVat"></label></div>
+  <button class="btn-pri sv" id="saveDoc">저장</button>
+</div></section>
+
+<section id="setStamp" class="screen"><div class="sw-wrap">
+  <div class="sw-head"><button class="icon-btn sBack" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>도장</h3></div>
+  <div class="grp fm">
+    <div class="stamp-line"><div class="checker sm" id="stampPrev">없음</div><label class="sr pl0"><span class="tx"><b>문서에 도장 넣기</b></span><input type="checkbox" class="swc" id="stampOn"></label></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="sbtn pri" id="btnStampCam" type="button">사진 찍기</button><button class="sbtn" id="btnStampPick" type="button">사진에서 고르기</button></div>
+    <div class="small">흰 종이에 진하게 찍어 그림자 없이 찍으면 흰 배경이 자동으로 지워져요.</div>
+    <div class="seg" id="stampColor"><button data-v="orig" type="button">사진 색 그대로</button><button data-v="red" type="button">선명한 빨간색</button></div>
+    <label class="range"><span style="width:88px">크기 <b id="stampSizeV">100%</b></span><input type="range" id="stampSize" min="60" max="140" step="5" value="100"></label>
+    <div class="small" style="margin-top:-6px">100% = 실제 도장 19mm</div>
+    <button class="sbtn" id="btnStampDel" type="button" style="color:#b3261e">도장 지우기</button>
+  </div>
+  <button class="btn-pri sv" id="saveStamp">저장</button>
 </div></section>
 
 <!-- 다른이름저장 (아래에서 올라옴) -->
@@ -943,7 +1011,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
 <script>
 'use strict';
-const APP_V = '6.1';
+const APP_V = '6.4';
 const KEY = 'shalom-quote-v5';
 const UI_KEY = 'shalom-quote-v5-ui';
 let UI = {}; try { UI = JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; } catch (e) { UI = {}; }
@@ -962,11 +1030,10 @@ const MIN_ROWS_PAGE = 10;
 const STAMP_PX = 72; // 19mm at 794px = 210mm
 
 const defaultSettings = {
-  bizNo: '637-23-00500', bizName: '샬롬광고기획', ceoName: '정선경',
-  address: '대전광역시 유성구 유성대로20 2층', bizType: '서비스업 외',
-  bizItem: '옥외 및 전시 광고업', phone: '042)543-1238',
-  defaultNoteSt: '',
-  defaultNote: '견적 결정 후 계약금 10%, 중도금 40%, 시공 당일 50% 결제. | A/S는 시공일로부터 1년.',
+  // 회사 정보·비고는 코드에 넣지 않음(공개 저장소). 설정에서 입력하거나 백업 파일로 불러옴
+  bizNo: '', bizName: '', ceoName: '', address: '', bizType: '', bizItem: '', phone: '',
+  defaultNoteSt: '', defaultNote: '',
+  footMsg: '올바른 선택이 가치를 더합니다. 최고의 결과로 완성하겠습니다.',
   vatDefault: false,
   stamp: '', stampSrc: '', stampColor: 'red', stampSize: 100, stampOn: true
 };
@@ -1166,15 +1233,18 @@ window.addEventListener('popstate', () => {
   }
   if (screen === 'preview') { show('edit'); return; }
   if (screen === 'edit') { leaveEdit(); return; }
+  if (SUBSET.includes(screen)) { show('settings'); fillSettingsMain(); return; }
   if (screen === 'settings') { show('home'); renderHome(); return; }
 });
 try { history.replaceState({ s: 'home' }, ''); } catch (e) {}
 function applyTone() { document.body.classList.toggle('doc-st', (screen === 'edit' || screen === 'preview') && isSt(cur)); }
+const SUBSET = ['setCompany', 'setDoc', 'setStamp'];
 function goBack() {
   if (histDepth > 0) { history.back(); return; }
   // 방문 기록을 못 쓰는 환경이면 직접 이동
   if (screen === 'preview') show('edit');
   else if (screen === 'edit') leaveEdit();
+  else if (SUBSET.includes(screen)) { show('settings'); fillSettingsMain(); }
   else if (screen === 'settings') { show('home'); renderHome(); }
 }
 
@@ -1306,6 +1376,8 @@ async function openFromList(no) {
   openEditor(stripMeta(app.quotes[no]), no, false);
 }
 async function startNew(t) {
+  if (!String(app.settings.bizName || '').trim() &&
+      (await ask('회사 정보가 비어 있어요.\n공급자 칸에 들어갈 회사 정보를 먼저 입력할까요?', { ok: '입력하러 가기', cancel: '그냥 쓰기' }))) { openSettings(); openCompany(); return; }
   const d = readDraft();
   if (d && d.cur && !isBlankDraft(d) && !(await ask(`작성 중이던 ${docName(d.cur)}가 있어요.\n버리고 새로 쓸까요?`, { ok: '새로 쓰기' }))) return;
   newQuote(t);
@@ -1382,6 +1454,7 @@ function renderEditor() {
   const sp = supplierOf(cur);
   $('supL1').innerHTML = `<span><b>${esc(sp.bizName)}</b> · ${esc(sp.ceoName)} · ${esc(sp.bizNo)}</span>`;
   $('supL2').textContent = [sp.address, sp.phone].filter(Boolean).join(' · ');
+  $('fmMsg').textContent = app.settings.footMsg || ''; $('fmName').textContent = sp.bizName || '';
   const st = app.settings;
   $('supStamp').innerHTML = st.stamp && st.stampOn ? `<img src="${st.stamp}" alt="도장">` : '<span>도장<br>없음</span>';
   // 자동완성 목록
@@ -1409,9 +1482,9 @@ function renderItems() {
   cur.items.forEach((it, i) => {
     h += `<tr data-i="${i}">
       <td><input class="c" data-f="spec" enterkeyhint="next" value="${esc(it.spec)}" autocomplete="off"></td>
-      <td class="nm"><textarea rows="1" data-f="name" enterkeyhint="next">${esc(it.name)}</textarea><button class="nlbtn" type="button" tabindex="-1">↵ 줄바꿈</button><button class="rowdel" aria-label="이 줄 삭제"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></td>
-      <td><input class="r" data-f="qty" inputmode="decimal" enterkeyhint="next" value="${esc(fmtInput(it.qty))}" autocomplete="off"></td>
-      <td><input class="r" data-f="unitPrice" inputmode="numeric" enterkeyhint="next" value="${esc(fmtInput(it.unitPrice))}" autocomplete="off"></td>
+      <td class="nm"><textarea rows="1" data-f="name" enterkeyhint="next">${esc(it.name)}</textarea><button class="nlbtn" type="button" tabindex="-1">↵ 줄바꿈</button><button class="rowdel" type="button" aria-label="이 줄 삭제"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></td>
+      <td><input class="r" data-f="qty" inputmode="${numMode('qty')}" enterkeyhint="next" value="${esc(fmtInput(it.qty))}" autocomplete="off"></td>
+      <td><input class="r" data-f="unitPrice" inputmode="${numMode('unitPrice')}" enterkeyhint="next" value="${esc(fmtInput(it.unitPrice))}" autocomplete="off"></td>
       <td class="calc" data-c="supply"></td>${inc ? '<td class="calc" data-c="tax"></td>' : ''}
     </tr>`;
   });
@@ -1471,10 +1544,18 @@ tbl.addEventListener('input', (e) => {
   }
   updateCalcCells(); renderTotals(); touch();
 });
+// 키보드 [다음]·엔터: 거래처명 → 규격 → 품목 → 수량 → 단가 → 다음 줄 규격
 function focusNextFrom(el) {
-  const tr = el.closest('tr'); const q = tr && tr.querySelector('[data-f=qty]');
-  if (q) setTimeout(() => q.focus(), 0);
+  const list = [$('fClient'), ...tbl.querySelectorAll('tbody tr [data-f]')];
+  const nx = list[list.indexOf(el) + 1];
+  setTimeout(() => { if (nx) nx.focus(); else el.blur(); }, 0);
 }
+$('fEdit').addEventListener('keydown', (e) => {
+  const t = e.target;
+  if (e.key === 'Enter' && !e.isComposing && t.tagName === 'INPUT' && t.type !== 'date') { e.preventDefault(); focusNextFrom(t); }
+});
+// 기기 판별 없이, 이 설정을 켠 기기에서만 일반 키보드 (작은 탭이 휴대폰으로 잘못 판별되던 문제)
+function numMode(f) { return UI.kbText ? 'text' : (f === 'qty' ? 'decimal' : 'numeric'); }
 // 직접 넣는 줄바꿈: [↵ 줄바꿈] 버튼, PC는 Shift+Enter
 let nlOK = false;
 function insertNL(ta) {
@@ -1622,7 +1703,7 @@ function buildPage(q, no, part) {
       <tbody>${rows}${last ? sums : ''}</tbody></table>` + (last ? `
     <div class="pg-note"><b>비 고</b><div>${esc(q.note)}</div></div>
     <div class="pg-grow"></div>
-    <div class="pg-foot"><b>올바른 선택이 가치를 더합니다. 최고의 결과로 완성하겠습니다.</b><b>샬롬광고기획</b></div>` : `<div class="pg-grow"></div>`) + `<div class="pg-num"></div>`;
+    <div class="pg-foot">${st.footMsg ? `<b class="fm">${esc(st.footMsg)}</b>` : ''}${sp.bizName ? `<b class="fn">${esc(sp.bizName)}</b>` : ''}</div>` : `<div class="pg-grow"></div>`) + `<div class="pg-num"></div>`;
   return el;
 }
 // A4 높이에 맞춰 품목을 여러 쪽으로 나눔 (host는 화면에 붙어 있어야 높이를 잴 수 있음)
@@ -1845,20 +1926,21 @@ function openSettingsBackupTxt() {
   if (app.lastBackup) { const d = new Date(app.lastBackup); bt.textContent = `마지막 ${d.getMonth() + 1}월 ${d.getDate()}일`; bt.className = ''; }
   else { bt.textContent = '아직 안 했어요'; bt.className = 'warn'; }
 }
-function openSettings() {
+function fillSettingsMain() {
   const s = app.settings;
-  $('sumCompany').innerHTML = `<b>${esc(s.bizName)}</b> · ${esc(s.ceoName)} · ${esc(s.bizNo)}<br>${esc(s.address)} · ${esc(s.phone)}`;
+  $('sumCompany').innerHTML = String(s.bizName || '').trim() ? esc([s.bizName, s.ceoName].filter(Boolean).join(' · ')) : '<span class="warn">입력이 필요해요</span>';
+  $('sumDoc').textContent = '비고 · 아래 문구 · 부가세 ' + (s.vatDefault ? '포함' : '별도');
+  $('sumStamp').textContent = s.stamp ? ((s.stampOn !== false ? '넣기' : '안 넣기') + ' · ' + (s.stampSize || 100) + '%') : '없음';
   openSettingsBackupTxt();
   $('verTxt').textContent = '샬롬견적서 V' + APP_V;
-  document.querySelectorAll('#settings .panel').forEach((pn) => { pn.hidden = true; });
-  $('sumCompany').hidden = false;
-  document.querySelectorAll('#settings .lnk').forEach((l) => { l.textContent = l.dataset.tg === 'pStamp' ? '바꾸기' : '수정'; });
-  $('sBizNo').value = s.bizNo; $('sBizName').value = s.bizName; $('sCeo').value = s.ceoName;
-  $('sAddr').value = s.address; $('sType').value = s.bizType; $('sItem').value = s.bizItem;
-  $('sPhone').value = s.phone; $('sNote').value = s.defaultNote; $('sNoteSt').value = s.defaultNoteSt || ''; $('sVat').checked = !!s.vatDefault;
-  stampTmp = { stamp: s.stamp, stampSrc: s.stampSrc, stampColor: s.stampColor || 'red', stampSize: s.stampSize || 100, stampOn: s.stampOn !== false };
-  renderStampUI();
-  show('settings', true);
+  $('sKbText').checked = !!UI.kbText;
+}
+function openSettings() { fillSettingsMain(); show('settings', true); }
+function openCompany() {
+  const s = app.settings;
+  $('sBizName').value = s.bizName || ''; $('sCeo').value = s.ceoName || ''; $('sBizNo').value = s.bizNo || '';
+  $('sAddr').value = s.address || ''; $('sPhone').value = s.phone || ''; $('sType').value = s.bizType || ''; $('sItem').value = s.bizItem || '';
+  show('setCompany', true);
 }
 function renderStampUI() {
   $('stampPrev').innerHTML = stampTmp.stamp ? `<img src="${stampTmp.stamp}" alt="도장">` : '없음';
@@ -1868,20 +1950,33 @@ function renderStampUI() {
   $('btnStampDel').style.display = stampTmp.stamp ? '' : 'none';
 }
 $('btnSettings').onclick = openSettings;
-document.querySelectorAll('#settings .lnk').forEach((l) => l.addEventListener('click', () => {
-  const pn = $(l.dataset.tg); pn.hidden = !pn.hidden;
-  if (l.dataset.tg === 'pCompany') $('sumCompany').hidden = !pn.hidden;
-  l.textContent = pn.hidden ? (l.dataset.tg === 'pStamp' ? '바꾸기' : '수정') : '접기';
-}));
 $('sClose').onclick = () => goBack();
+document.querySelectorAll('.sBack').forEach((b) => { b.onclick = () => goBack(); });
+$('goCompany').onclick = openCompany;
+$('goDoc').onclick = () => {
+  const s = app.settings;
+  $('sNote').value = s.defaultNote || ''; $('sNoteSt').value = s.defaultNoteSt || '';
+  $('sFoot').value = s.footMsg || ''; $('sVat').checked = !!s.vatDefault;
+  show('setDoc', true);
+};
+$('goStamp').onclick = () => {
+  const s = app.settings;
+  stampTmp = { stamp: s.stamp, stampSrc: s.stampSrc, stampColor: s.stampColor || 'red', stampSize: s.stampSize || 100, stampOn: s.stampOn !== false };
+  renderStampUI(); show('setStamp', true);
+};
+$('sKbText').addEventListener('change', (e) => { UI.kbText = e.target.checked; saveUI(); });
 $('sOpenFile').onclick = () => $('fileJson').click();
 $('sBackup').onclick = () => { exportBackup(); openSettingsBackupTxt(); };
-$('sCancel').onclick = () => goBack();
-$('sSave').onclick = () => {
+function saveSettings(patch, msg) {
+  app.settings = { ...app.settings, ...patch };
+  if (persist()) { toast(msg); goBack(); }
+}
+$('saveCompany').onclick = () => {
   const v = (id) => $(id).value.trim();
-  app.settings = { ...app.settings, bizNo: v('sBizNo'), bizName: v('sBizName'), ceoName: v('sCeo'), address: v('sAddr'), bizType: v('sType'), bizItem: v('sItem'), phone: v('sPhone'), defaultNote: $('sNote').value, defaultNoteSt: $('sNoteSt').value, vatDefault: $('sVat').checked, ...stampTmp };
-  if (persist()) { toast('설정을 저장했어요'); goBack(); }
+  saveSettings({ bizName: v('sBizName'), ceoName: v('sCeo'), bizNo: v('sBizNo'), address: v('sAddr'), phone: v('sPhone'), bizType: v('sType'), bizItem: v('sItem') }, '회사 정보를 저장했어요');
 };
+$('saveDoc').onclick = () => saveSettings({ defaultNote: $('sNote').value, defaultNoteSt: $('sNoteSt').value, footMsg: $('sFoot').value.replace(/\s*\n\s*/g, ' ').trim(), vatDefault: $('sVat').checked }, '문서 기본값을 저장했어요');
+$('saveStamp').onclick = () => saveSettings({ ...stampTmp }, '도장 설정을 저장했어요');
 $('btnStampCam').onclick = () => $('fileStampCam').click();
 $('btnStampPick').onclick = () => $('fileStampPick').click();
 $('btnStampDel').onclick = async () => { if (await ask('도장을 지울까요?', { ok: '지우기', danger: true })) { stampTmp.stamp = ''; stampTmp.stampSrc = ''; renderStampUI(); } };
@@ -2064,7 +2159,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 loadApp();
 renderHome();
 if (HOSTED && !IS_STANDALONE) {
-  $('btnHowInstall').style.display = '';
+  $('glApp').style.display = ''; $('grpApp').style.display = '';
   if (IS_KAKAO) showKakao();
   else if (!UI.obDone) showWelcome(false);
 }
