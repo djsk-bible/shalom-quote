@@ -389,6 +389,12 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
 #setStamp .fm{padding:14px;gap:12px}
 .sw-wrap .sv{position:sticky;bottom:calc(14px + env(safe-area-inset-bottom));margin-top:18px;width:100%;box-shadow:0 4px 12px rgba(43,95,168,.25)}
 
+/* 화면 크기 (설정, 이 기기만) — A4 미리보기·PDF·프린트에는 적용하지 않음 */
+.wrap,.e-wrap,.sw-wrap{zoom:var(--uz,1)}
+.seg4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px;border-radius:10px;background:#eef1f5;margin:0 14px 12px}
+.seg4 button{height:34px;border:none;border-radius:8px;background:transparent;font:inherit;font-size:14px;font-weight:600;color:#5b6475}
+.seg4 button.on{background:#fff;color:#1d2433;font-weight:700;box-shadow:0 1px 2px rgba(16,24,40,.14)}
+
 @media print{
   @page{size:A4;margin:0}
   html,body{background:#fff!important}
@@ -504,6 +510,11 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
     <button class="sr" id="goCompany"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span><span class="tx"><b>회사 정보</b><small id="sumCompany"></small></span><i data-ic="chev" data-s="16"></i></button>
     <button class="sr" id="goDoc"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span><span class="tx"><b>문서 기본값</b><small id="sumDoc"></small></span><i data-ic="chev" data-s="16"></i></button>
     <button class="sr" id="goStamp"><span class="ic r"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 12h6"/></svg></span><span class="tx"><b>도장</b><small id="sumStamp"></small></span><i data-ic="chev" data-s="16"></i></button>
+  </div>
+  <div class="gl">화면</div>
+  <div class="grp">
+    <div class="sr" style="border-bottom:none"><span class="ic n"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4"/><path d="M6 20V8"/><path d="M3 11l3-3 3 3"/><path d="M12 20l4-12 4 12"/><path d="M13.5 16h5"/></svg></span><span class="tx"><b>화면 크기</b><small>이 기기에만 적용돼요</small></span></div>
+    <div class="seg4" id="sScale"><button type="button" data-v="100">100%</button><button type="button" data-v="110">110%</button><button type="button" data-v="120">120%</button><button type="button" data-v="130">130%</button></div>
   </div>
   <div class="gl">입력</div>
   <div class="grp">
@@ -1011,11 +1022,13 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
 <script>
 'use strict';
-const APP_V = '6.4';
+const APP_V = '6.5';
 const KEY = 'shalom-quote-v5';
 const UI_KEY = 'shalom-quote-v5-ui';
 let UI = {}; try { UI = JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; } catch (e) { UI = {}; }
 function saveUI() { try { localStorage.setItem(UI_KEY, JSON.stringify(UI)); } catch (e) {} }
+function applyScale() { const v = [100, 110, 120, 130].includes(+UI.uiScale) ? +UI.uiScale : 100; document.documentElement.style.setProperty('--uz', v / 100); return v; }
+applyScale();
 const UA = navigator.userAgent;
 const IS_KAKAO = /KAKAOTALK/i.test(UA);
 const IS_IOS = /iPhone|iPad|iPod/i.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1934,6 +1947,7 @@ function fillSettingsMain() {
   openSettingsBackupTxt();
   $('verTxt').textContent = '샬롬견적서 V' + APP_V;
   $('sKbText').checked = !!UI.kbText;
+  const v = applyScale(); $('sScale').querySelectorAll('button').forEach((b) => b.classList.toggle('on', +b.dataset.v === v));
 }
 function openSettings() { fillSettingsMain(); show('settings', true); }
 function openCompany() {
@@ -1964,6 +1978,10 @@ $('goStamp').onclick = () => {
   stampTmp = { stamp: s.stamp, stampSrc: s.stampSrc, stampColor: s.stampColor || 'red', stampSize: s.stampSize || 100, stampOn: s.stampOn !== false };
   renderStampUI(); show('setStamp', true);
 };
+$('sScale').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  UI.uiScale = +b.dataset.v; saveUI(); fillSettingsMain();
+});
 $('sKbText').addEventListener('change', (e) => { UI.kbText = e.target.checked; saveUI(); });
 $('sOpenFile').onclick = () => $('fileJson').click();
 $('sBackup').onclick = () => { exportBackup(); openSettingsBackupTxt(); };
