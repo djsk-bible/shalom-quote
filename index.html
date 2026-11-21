@@ -84,7 +84,7 @@ svg{flex-shrink:0}
 /* ---------- 작성 ---------- */
 #edit{min-height:100vh;background:var(--bg)}
 .e-wrap{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 12px 28px;display:flex;flex-direction:column;gap:5px}
-.sheet{background:#fff;border:2px solid #000;padding:8px 6px;display:flex;flex-direction:column;gap:6px}
+.sheet{background:#fff;border:2px solid #000;padding:8px 6px;display:flex;flex-direction:column;gap:6px;position:relative}
 .s-title{text-align:center;font-size:18px;font-weight:700;letter-spacing:10px;padding-bottom:2px;border-bottom:2px solid #222}
 .info{display:flex;flex-direction:column;padding-left:2px}
 .info .line{display:flex;align-items:center;min-height:28px}
@@ -349,6 +349,25 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
 #saSt{background:#a33a45}
 /* 품목 줄바꿈 버튼 */
 .nlbtn{position:absolute;left:2px;top:100%;margin-top:3px;z-index:6;height:26px;padding:0 10px;border:none;border-radius:13px;background:#1d2433;color:#fff;font-size:12px;font-weight:700;display:none;align-items:center;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+/* 품목 후보 줄 (줄바꿈 버튼 + 자주 쓰는 품목) */
+.it .nlbtn{display:none!important}
+#itemSug{position:absolute;z-index:7;display:none;flex-direction:column;gap:2px;padding:2px 0 4px}
+#itemSug.show{display:flex}
+#itemSug .hd{display:flex;align-items:center;justify-content:space-between;height:28px}
+#itemSug .nl{height:26px;padding:0 10px;border:none;border-radius:13px;background:#1d2433;color:#fff;font:inherit;font-size:12px;font-weight:700;display:flex;align-items:center;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+#itemSug .lb{font-size:11px;font-weight:600;color:#7a8394;background:rgba(255,255,255,.92);padding:2px 6px;border-radius:6px}
+#itemSug .lst{background:#fff;border:1px solid #cfd6e0;border-radius:10px;box-shadow:0 6px 16px rgba(16,24,40,.16);overflow:hidden}
+#itemSug .ch{display:flex;align-items:center;gap:3px;width:100%;min-height:26px;padding:2px 2px 2px 8px;border:none;border-bottom:1px solid #f0f2f5;background:#fff;font:inherit;font-size:13px;color:#1d2433;text-align:left;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#itemSug .ch:last-child{border-bottom:none}
+#itemSug .ch:active{background:#f3f6fb}
+#itemSug .ch .t{flex:1;min-width:0;line-height:1.25;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere}
+#itemSug .ch .t mark{background:none;color:#2b5fa8;font-weight:700}
+#itemSug .ch .pin{width:12px;color:#c88a00;flex-shrink:0}
+#itemSug .ch .x{width:26px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a3aab6;font-size:14px}
+#setItems .itl .sr{min-height:50px}
+#setItems .itl .tx b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#setItems .ib{height:32px;padding:0 10px;border:1px solid #d5dbe5;border-radius:8px;background:#fff;font:inherit;font-size:13px;font-weight:600;color:#4a5160;flex-shrink:0}
+#setItems .ib.on{color:#c88a00;border-color:#f0d58a;background:#fff8e6}
 .it td.nm:focus-within .nlbtn{display:flex}
 
 /* 설정 (묶음형) */
@@ -514,6 +533,7 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
       </div>
       <div class="total"><span class="tl">합계금액</span><span class="tv"><b id="totK">일금 영원정</b><span>( ₩ <span id="totN">0</span> / <span id="totV">VAT별도</span> )</span></span></div>
       <table class="it" id="itTable"></table>
+      <div id="itemSug" role="listbox" aria-label="자주 쓰는 품목"></div>
       <button class="addrow" id="btnAddRow" type="button"><i data-ic="plus" data-s="14" data-w="2.6"></i>품목 추가</button>
       <table class="sum" id="sumTable"></table>
       <label class="note"><span>비고</span><textarea id="fNote" placeholder="기록사항을 입력하세요"></textarea></label>
@@ -582,6 +602,7 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
     <button class="sr" id="goCompany"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></span><span class="tx"><b>회사 정보</b><small id="sumCompany"></small></span><i data-ic="chev" data-s="16"></i></button>
     <button class="sr" id="goDoc"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span><span class="tx"><b>문서 기본값</b><small id="sumDoc"></small></span><i data-ic="chev" data-s="16"></i></button>
     <button class="sr" id="goStamp"><span class="ic r"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 12h6"/></svg></span><span class="tx"><b>도장</b><small id="sumStamp"></small></span><i data-ic="chev" data-s="16"></i></button>
+    <button class="sr" id="goItems"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="tx"><b>자주 쓰는 품목</b><small id="sumItems"></small></span><i data-ic="chev" data-s="16"></i></button>
   </div>
   <div class="gl">이 기기</div>
   <div class="grp">
@@ -606,6 +627,12 @@ body.doc-st .sup{background:#fcf7f8;border-color:#c9a5aa}
     <button class="sr" id="btnHowInstall"><span class="ic n"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></span><span class="tx"><b>홈 화면에 설치하는 방법</b></span><i data-ic="chev" data-s="16"></i></button>
   </div>
   <div class="ver" id="verTxt"></div>
+</div></section>
+
+<section id="setItems" class="screen"><div class="sw-wrap">
+  <div class="sw-head"><button class="icon-btn sBack" aria-label="뒤로"><i data-ic="back" data-s="24"></i></button><h3>자주 쓰는 품목</h3></div>
+  <div class="hint">저장한 문서의 품목명이 자동으로 후보가 돼요. ★ 고정은 항상 맨 앞에, 숨긴 품목은 후보에 안 나와요. 품목 칸에서 후보를 길게 누르면 바로 고정돼요.</div>
+  <div id="itemsBody"></div>
 </div></section>
 
 <section id="setDev" class="screen"><div class="sw-wrap">
@@ -1107,7 +1134,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
 <script>
 'use strict';
-const APP_V = '6.6';
+const APP_V = '6.8';
 const KEY = 'shalom-quote-v5';
 const UI_KEY = 'shalom-quote-v5-ui';
 let UI = {}; try { UI = JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; } catch (e) { UI = {}; }
@@ -1282,6 +1309,23 @@ function calcTotals(q) {
 // 견적서: 202610-0001 · 거래명세서: M202610-0001 (번호를 따로 씀)
 const isSt = (q) => !!q && q.docType === 'statement';
 const docName = (q) => (isSt(q) ? '거래명세서' : '견적서');
+// ---- 자주 쓰는 품목: 저장한 문서의 품목명에서 자동으로 (고정·숨김은 설정에 저장 → 백업에 포함)
+const itemKey = (t) => String(t || '').trim();
+function itemPool() {
+  const hide = new Set(app.settings.itemHide || []), pin = app.settings.itemPin || [];
+  const m = new Map();
+  Object.values(app.quotes).forEach((q) => (q.items || []).forEach((it) => {
+    const k = itemKey(it.name); if (!k || hide.has(k)) return;
+    const o = m.get(k) || { name: k, n: 0, last: '' }; o.n++; if (String(q.issueDate) > o.last) o.last = String(q.issueDate); m.set(k, o);
+  }));
+  pin.forEach((k) => { if (!hide.has(k) && !m.has(k)) m.set(k, { name: k, n: 0, last: '' }); });
+  const pi = (k) => { const i = pin.indexOf(k); return i < 0 ? 1e9 : i; };
+  return [...m.values()].sort((a, b) => pi(a.name) - pi(b.name) || b.n - a.n || b.last.localeCompare(a.last) || a.name.localeCompare(b.name));
+}
+function setItemFlag(list, k, on) {
+  const a = (app.settings[list] || []).filter((x) => x !== k); if (on) a.push(k);
+  app.settings = { ...app.settings, [list]: a }; persist();
+}
 // 문서 종류별 기본 비고 (설정에서 바꿈)
 const defNote = (t) => String((t === 'statement' ? app.settings.defaultNoteSt : app.settings.defaultNote) || '');
 function ctrOf(t) { if (t === 'statement') { if (!app.counterSt) app.counterSt = {}; return app.counterSt; } return app.counterByYear; }
@@ -1342,7 +1386,7 @@ window.addEventListener('popstate', () => {
 });
 try { history.replaceState({ s: 'home' }, ''); } catch (e) {}
 function applyTone() { document.body.classList.toggle('doc-st', (screen === 'edit' || screen === 'preview') && isSt(cur)); }
-const SUBSET = ['setCompany', 'setDoc', 'setStamp', 'setDev'];
+const SUBSET = ['setCompany', 'setDoc', 'setStamp', 'setDev', 'setItems'];
 function goBack() {
   if (histDepth > 0) { history.back(); return; }
   // 방문 기록을 못 쓰는 환경이면 직접 이동
@@ -1692,6 +1736,75 @@ function insertNL(ta) {
   nlOK = true; ta.dispatchEvent(new Event('input', { bubbles: true })); nlOK = false;
   ta.focus();
 }
+// ---- 품목 후보 줄
+const sug = $('itemSug'); let sugTa = null, sugTimer = null, sugLong = false;
+function showSug(ta) {
+  sugTa = ta;
+  const tr = ta.closest('tr'), sheet = sug.parentNode;
+  const kw = itemKey(ta.value).toLowerCase(), pin = app.settings.itemPin || [];
+  const list = itemPool().filter((o) => o.name.toLowerCase() !== kw && (!kw || o.name.toLowerCase().includes(kw))).slice(0, 4);
+  const hl = (t) => { const e = esc(t); if (!kw) return e; const i = t.toLowerCase().indexOf(kw); return i < 0 ? e : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + kw.length)) + '</mark>' + esc(t.slice(i + kw.length)); };
+  const td = ta.closest('td');
+  // 줄바꿈은 원래 자리(품목 칸 바로 아래 왼쪽), 후보는 그 아래 세로 목록
+  sug.innerHTML = `<div class="hd"><button type="button" class="nl" tabindex="-1">↵ 줄바꿈</button>${list.length ? '<span class="lb">자주 쓰는 품목</span>' : ''}</div>` +
+    (list.length ? '<div class="lst">' + list.map((o) => `<button type="button" class="ch" tabindex="-1" data-k="${esc(o.name)}"><span class="pin">${pin.includes(o.name) ? '★' : ''}</span><span class="t">${hl(o.name)}</span><span class="x" data-x="1" aria-label="숨기기">✕</span></button>`).join('') + '</div>' : '');
+  const upTd = (tr.querySelector('[data-f=unitPrice]') || ta).closest('td');
+  // 품목칸 왼쪽 선 ~ 단가칸 오른쪽 선 (화면 크기 확대(zoom)에도 맞게 비율 보정)
+  const sr = sheet.getBoundingClientRect(), k = sheet.offsetWidth / (sr.width || 1), a = td.getBoundingClientRect(), u = upTd.getBoundingClientRect();
+  sug.style.left = ((a.left - sr.left) * k - sheet.clientLeft) + 'px'; sug.style.width = ((u.right - a.left) * k) + 'px';
+  sug.style.top = (tbl.offsetTop + tr.offsetTop + tr.offsetHeight) + 'px';
+  sug.classList.add('show');
+}
+function hideSug() { sug.classList.remove('show'); sugTa = null; }
+tbl.addEventListener('focusin', (e) => { if (e.target.dataset.f === 'name') showSug(e.target); else hideSug(); });
+tbl.addEventListener('input', (e) => { if (e.target.dataset.f === 'name' && sugTa === e.target) showSug(e.target); });
+tbl.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement || document.activeElement.dataset.f !== 'name') hideSug(); }, 120));
+sug.addEventListener('pointerdown', (e) => {
+  e.preventDefault();   // 입력 칸 포커스(키보드) 유지
+  const ch = e.target.closest('.ch'); sugLong = false; clearTimeout(sugTimer);
+  if (ch && !e.target.closest('[data-x]')) sugTimer = setTimeout(() => {   // 길게 누르기 → ★ 고정/해제
+    sugLong = true; const k = ch.dataset.k, on = !(app.settings.itemPin || []).includes(k);
+    setItemFlag('itemPin', k, on); toast(on ? '★ 고정했어요' : '고정을 풀었어요'); if (sugTa) showSug(sugTa);
+  }, 550);
+});
+sug.addEventListener('pointerup', () => clearTimeout(sugTimer));
+sug.addEventListener('pointercancel', () => clearTimeout(sugTimer));
+sug.addEventListener('contextmenu', (e) => e.preventDefault());
+sug.addEventListener('click', (e) => {
+  const ta = sugTa; if (!ta) return;
+  if (e.target.closest('.nl')) { insertNL(ta); showSug(ta); return; }
+  const ch = e.target.closest('.ch'); if (!ch) return;
+  if (sugLong) { sugLong = false; return; }
+  const k = ch.dataset.k;
+  if (e.target.closest('[data-x]')) {   // ✕ → 숨기기 (되돌리기 가능)
+    setItemFlag('itemHide', k, true); showSug(ta);
+    snack('후보에서 숨겼어요', () => { setItemFlag('itemHide', k, false); if (sugTa) showSug(sugTa); });
+    return;
+  }
+  ta.value = k; nlOK = true; ta.dispatchEvent(new Event('input', { bubbles: true })); nlOK = false;
+  hideSug(); focusNextFrom(ta);   // 품목명만 채우고 수량 칸으로
+});
+// ---- 설정: 자주 쓰는 품목 화면
+function renderItemsSet() {
+  const pin = app.settings.itemPin || [], hide = app.settings.itemHide || [], pool = itemPool();
+  const row = (k, sub, btns) => `<div class="sr"><span class="tx"><b>${esc(k.replace(/\n/g, ' / '))}</b>${sub ? `<small>${sub}</small>` : ''}</span>${btns}</div>`;
+  const cnt = (k) => { const o = pool.find((x) => x.name === k); return o && o.n ? `${o.n}번 사용` : ''; };
+  let h = '<div class="gl">★ 고정한 품목</div><div class="grp itl">' + (pin.length ? pin.map((k) => row(k, cnt(k), `<button class="ib on" data-a="unpin" data-k="${esc(k)}">★ 해제</button>`)).join('') : '<div class="sl-empty">후보를 길게 누르거나 아래에서 ★를 누르세요</div>') + '</div>';
+  const top = pool.filter((o) => !pin.includes(o.name)).slice(0, 30);
+  h += '<div class="gl">많이 쓴 품목</div><div class="grp itl">' + (top.length ? top.map((o) => row(o.name, `${o.n}번 사용`, `<button class="ib" data-a="pin" data-k="${esc(o.name)}">★</button><button class="ib" data-a="hide" data-k="${esc(o.name)}">숨기기</button>`)).join('') : '<div class="sl-empty">아직 저장한 품목이 없어요</div>') + '</div>';
+  if (hide.length) h += '<div class="gl">숨긴 품목</div><div class="grp itl">' + hide.map((k) => row(k, '', `<button class="ib" data-a="show" data-k="${esc(k)}">다시 보이기</button>`)).join('') + '</div>';
+  $('itemsBody').innerHTML = h;
+}
+$('itemsBody').addEventListener('click', (e) => {
+  const b = e.target.closest('.ib'); if (!b) return; const k = b.dataset.k;
+  if (b.dataset.a === 'pin') setItemFlag('itemPin', k, true);
+  else if (b.dataset.a === 'unpin') setItemFlag('itemPin', k, false);
+  else if (b.dataset.a === 'hide') { setItemFlag('itemHide', k, true); setItemFlag('itemPin', k, false); }
+  else if (b.dataset.a === 'show') setItemFlag('itemHide', k, false);
+  renderItemsSet();
+});
+$('goItems').onclick = () => { renderItemsSet(); show('setItems', true); };
+
 tbl.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'TEXTAREA' && e.key === 'Enter' && !e.isComposing) {
     e.preventDefault();
@@ -2129,6 +2242,7 @@ function openSettingsBackupTxt() {
   else { bt.textContent = '아직 안 했어요'; bt.className = 'warn'; }
 }
 function fillSettingsMain() {
+  { const pin = (app.settings.itemPin || []).length, hid = (app.settings.itemHide || []).length; $('sumItems').textContent = `후보 ${itemPool().length}개 · 고정 ${pin} · 숨김 ${hid}`; }
   const s = app.settings;
   $('sumCompany').innerHTML = String(s.bizName || '').trim() ? esc([s.bizName, s.ceoName].filter(Boolean).join(' · ')) : '<span class="warn">입력이 필요해요</span>';
   $('sumDoc').textContent = '비고 · 아래 문구 · 부가세 ' + (s.vatDefault ? '포함' : '별도');
